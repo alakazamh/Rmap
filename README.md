@@ -1,6 +1,6 @@
 # Rmap — RustScan + Nmap wrapper
 
-Rmap (script `rscanv2`) is a small Bash tool that simplifies port scanning by doing two steps:
+Rmap is a small Bash tool that simplifies port scanning by doing two steps:
 
 1. Fast discovery: detect open ports (optionally using RustScan).  
 2. Targeted scan: run a focused Nmap scan only on the discovered ports.
@@ -23,7 +23,7 @@ This two-step approach speeds up large-range discovery while keeping Nmap output
 Clone the repository and make the script executable:
 
 ```bash
-git clone https://github.com/<your-username>/Rmap.git
+git clone https://github.com/alakazamh/Rmap.git
 cd Rmap
 chmod +x rmap
 
