@@ -1,0 +1,14 @@
+# Temporary files
+*.log
+*.out
+*.tmp
+*.swp
+
+# RustScan raw output
+*.gnmap
+*.nmap
+*.xml
+
+# Backup files
+*~
+
