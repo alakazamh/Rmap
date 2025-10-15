@@ -1,2 +1,2 @@
 nmap
-figlet  # optional, only for banner display
+figlet
