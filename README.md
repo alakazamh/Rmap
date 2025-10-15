@@ -66,10 +66,8 @@ sudo cp target/release/rustscan /usr/local/bin/
 
 ```bash
 ./rscanv2 [options] <target>
-```
 
 Main options:
-
 -r, --rustscan
 Use RustScan for discovery (default RustScan invocation: rustscan -a <target> -r 1-65535 --ulimit=5000).
 
@@ -87,6 +85,7 @@ Save Nmap outputs in all formats using <prefix> (Nmap -oA).
 
 -h, --help
 Show usage.
+```
 
 Exemples
 ```bash
