@@ -308,6 +308,22 @@ if (( use_rustscan )); then
   fi
 fi
 
+# --- ensure ports variable exists for both rustscan and nmap-only paths ---
+ports="${ports:-}"
+
+# If ports empty (e.g. we ran nmap -oG in non-rustscan mode), parse the gnmap output.
+if [[ -z "${ports:-}" ]] && [[ -f "${probe_out}" ]]; then
+  ports=$(
+    # sed extracts the "Ports: ..." portion from gnmap lines and we pull the numeric port
+    sed -n 's/.*Ports: //p' "${probe_out}" 2>/dev/null \
+      | tr ',' '\n' \
+      | awk -F'/' '/\/open\// {print $1}' \
+      | sort -n -u \
+      | paste -sd, - || true
+  )
+fi
+
+
 # Clean the rustscan/nmap output before parsing (remove verbose lines)
 sed -E '/^(Discovered|Starting|Initiating|Completed|DNS|Host is up|Nmap scan report|Service detection|Scanning|Read data files from|Nmap done)/d' \
   "${probe_stdout}" | grep -vE '^\[~\]|^Open|^RustScan:|^You miss|^: |^__|^  /_|^\| |^-|^$' \
@@ -342,10 +358,11 @@ printf '%bRead data files from:%b /usr/share/nmap\n' "${BOLD}" "${RESET}"
 printf '%bNmap done:%b 1 IP address (1 host up) scanned.\n' "${BOLD}" "${RESET}"
 echo "           Raw packets sent: $(awk '/Raw packets sent/ {print $4, $5, $6}' "${probe_stdout}" 2>/dev/null) |"
 
-if [[ -z "$ports" ]]; then
+if [[ -z "${ports:-}" ]]; then
   printf '%b%s%b\n' "${FG_RED_BOLD}" "No ports found or discovery scan failed for ${target}" "${RESET}"
   exit 2
 fi
+
 
 
 # -----------------------------
