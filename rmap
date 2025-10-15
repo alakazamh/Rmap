@@ -393,6 +393,7 @@ delay_nmap=0.10
 dots=0
 maxdots=6
 port_count=$(echo "$ports" | tr ',' '\n' | wc -l)
+port_count="${port_count//[[:space:]]/}"
 
 while kill -0 "$nmap_pid" 2>/dev/null; do
   color="${nf_colors[$(( j % ${#nf_colors[@]} ))]}"
