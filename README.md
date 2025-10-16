@@ -1,9 +1,9 @@
-# Rmap — RustScan + Nmap wrapper
+# Rmap:  RustScan + Nmap wrapper
 
-Rmap is a small Bash tool that simplifies port scanning by doing two steps:
+Rmap is a small Bash tool that simplifies port scanning by performing two steps:
 
-1. Fast discovery: detect open ports (optionally using RustScan).  
-2. Targeted scan: run a focused Nmap scan only on the discovered ports.
+1. **Fast discovery** — detect open ports (optionally with RustScan).  
+2. **Targeted scan** — run a focused Nmap scan only on the discovered ports to get service/version details.
 
 This two-step approach speeds up large-range discovery while keeping Nmap output focused and readable.
 
@@ -18,7 +18,25 @@ This two-step approach speeds up large-range discovery while keeping Nmap output
 
 ---
 
+##  Key additions
+
+- **`--short` (`-s`) mode**: run discovery only and **skip** the targeted Nmap scan. Useful to quickly get the list of open ports without launching a full Nmap probe.
+- `--nmap-oN` and `--nmap-oA` let you save Nmap output (human-readable or all formats).
+- `--rust-args` allows appending custom arguments to RustScan.
+- `--save-rust` saves raw RustScan stdout for later analysis.
+
+---
+
+## Requirements
+
+- `bash`, `nmap`, `awk`, `sed`, `grep`, `sort`, `paste`, `mktemp`, `pkill`
+- `figlet` (optional, for banner)
+- RustScan (optional but recommended for faster discovery)
+
+---
+
 ## Installation
+
 
 Clone the repository and make the script executable:
 
@@ -28,7 +46,7 @@ cd Rmap
 chmod +x rmap
 
 
-## Install requirements (Debian / Kali / Ubuntu)
+## Install requirements (Debian / Ubuntu)
 ## Update package lists and install core tools:
 sudo apt update
 sudo apt install -y nmap figlet
@@ -38,13 +56,11 @@ RustScan may not be available in the distribution repositories. See below for Ru
 
 ---
 
-## RustScan: how to get it
+### RustScan: how to get it
 
-Official RustScan GitHub:
-
-Releases: https://github.com/RustScan/RustScan/releases
 Installation guide (wiki): https://github.com/bee-san/RustScan/wiki/Installation-Guide
 
+- **linux:**
 Download the latest .deb from the releases page and install:
 ```bash
 # download from the releases page, then:
@@ -52,22 +68,28 @@ sudo dpkg -i rustscan_<version>_amd64.deb
 sudo apt-get install -f -y    # fix dependencies if needed
 ```
 
-Build from source (if you need the latest or no package is available):
-```
-git clone https://github.com/RustScan/RustScan.git
-cd RustScan
-cargo build --release
-sudo cp target/release/rustscan /usr/local/bin/
-```
+- **macOS (Homebrew):**
+  ```bash
+  brew install rustscan
+  ```
+
+---
+
+## Important — privileges for Nmap-Only mode
+
+The targeted Nmap scan uses a SYN scan (-sS) by default. SYN scans require raw socket privileges (root / sudo). Run Rmap with sudo (or as root) to ensure Nmap can perform -sS. Running without sufficient privileges may force Nmap to use a connect scan (-sT) or fail, which changes scan characteristics and may affect accuracy.
 
 ---
 
 ## Usage
 
 ```bash
-./rscanv2 [options] <target>
+./rmap [options] <target>
 
 Main options:
+-s, --short
+Discovery only. Skip the targeted Nmap scan. Output: compact comma-separated list of discovered ports.
+
 -r, --rustscan
 Use RustScan for discovery (default RustScan invocation: rustscan -a <target> -r 1-65535 --ulimit=5000).
 
@@ -81,36 +103,52 @@ Save raw RustScan stdout to <file>.
 Save Nmap human-readable output to <file> (Nmap -oN).
 
 --nmap-oA <prefix>
-Save Nmap outputs in all formats using <prefix> (Nmap -oA).
+Save Nmap outputs in all formats (-oA <prefix> produces <prefix>.nmap, <prefix>.gnmap, <prefix>.xml).
 
 -h, --help
 Show usage.
 ```
 
-Exemples
+Exemples:
 ```bash
-# Nmap-only discovery and targeted scan
-./rmap 10.10.10.10
+## Rustscan mode:
+# 1) Quick discovery only (Rustscan + short mode)
+./rmap -s -r 10.10.10.10 # for saving raw output add flag '--save-rust <file>'
 
-# RustScan discovery + Nmap targeted, save human-readable output
-./rmap 10.10.10.10 -r --nmap-oN results.txt
+# 2) Full discovery (RustScan) + targeted Nmap scan, saving human-readable output
+./rmap -r --nmap-oN results.txt 10.10.10.0/24
 
-# RustScan with extra args and save raw output
-./rmap 10.10.10.10 -r --rust-args "--timeout 2000" --save-rust rust_raw.log
+# 3) Full discovery (RustScan) with extra args and save raw output
+./rmap -r --rust-args "--timeout 2000" --save-rust rust_raw.log 10.10.10.10
 
-# Save all nmap outputs (.nmap .gnmap .xml)
-./rmap 10.10.10.10 -r --nmap-oA scans/10.10.10.10
-```
+# 4) Save all Nmap outputs (.nmap .gnmap .xml)
+./rmap -r --nmap-oA scans/10.10.10.10 10.10.10.10
+
+## Nmap mode only
+# 1) Full discovery, saving human-readable output
+sudo ./rmap --nmap-oN 10.10.10.10 
+
+---
+
+Output & Files
+
+Temporary files are created under `/tmp/rmap.*` and cleaned automatically on exit.
+
+`--save-rust` will copy RustScan's raw stdout to the path you provide.
+
+`--nmap-oN` / `--nmap-oA` control where Nmap writes its final scan outputs.
+
+---
 
 
-Notes and best practices:
+## Safety and best practices:
 
-Only scan hosts for which you have permission.
+**Authorization:** Only scan targets you have explicit permission to test. Unauthorized scanning can be illegal.
 
-If RustScan is not installed, the script falls back to Nmap-only discovery; RustScan is optional, not required.
+**Testing environment:** When modifying parsing rules, test in an isolated lab (VMs / test ranges like 10.0.0.0/8 or VulnHub) before using on production.
 
-If you customize parsing rules, test them in an isolated lab first.
+**Rate limits & noise:** Default probe uses fairly aggressive rates (--min-rate / --ulimit). Adjust rust_args or the nmap probe flags if you need to reduce network load or avoid IDS triggers.
 
-License
+**Logging:** Keep --save-rust or Nmap outputs when reproducing findings; raw data helps triage parsing anomalies.
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+**Privilege awareness:** Running with sudo changes scan behavior and network side effects — document the privilege used when reporting.
