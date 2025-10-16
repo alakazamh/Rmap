@@ -65,7 +65,8 @@ Official guide: RustScan Wiki – Installation:
 
 **Linux (.deb)**
 Download the latest .deb package from the RustScan releases page:
-![[https://github.com/bee-san/RustScan/releases?utm_source=chatgpt.com]]
+![[https://github.com/bee-san/RustScan/releases]]
+
 ```bash
 sudo dpkg -i rustscan_<version>_amd64.deb
 sudo apt-get install -f -y  # fix missing dependencies if needed
@@ -118,7 +119,7 @@ Show usage.
 
 ---
 
-##Exemples:
+## Exemples:
 
 ### Rustscan mode:
 
