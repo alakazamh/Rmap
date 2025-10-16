@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Rmap — (c) 2025 freshM1 — MIT License
+# Rmap — (c) 2025 kasparv — MIT License
 # See LICENSE file for details.
 
 set -uo pipefail
