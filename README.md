@@ -7,7 +7,16 @@ Rmap is a lightweight Bash tool that simplifies port scanning by performing two 
 
 This two-step approach speeds up large-range discovery while keeping Nmap output focused and readable.
 
-![RMAP3](https://github.com/user-attachments/assets/36f2a604-f515-4652-b66a-c3323bcac8a6)
+<img width="2836" height="1566" alt="RMAP3" src="https://github.com/user-attachments/assets/61de9a17-f18c-44d0-b088-8ae1b93e94fe" />
+
+**Output of targeted nmap scans :**
+
+
+<img width="2858" height="1558" alt="RR" src="https://github.com/user-attachments/assets/b1487f09-85cd-4055-add6-8c7be6c2e88e" />
+
+**short mode:**
+
+<img width="2834" height="1586" alt="RMAP4" src="https://github.com/user-attachments/assets/701f1237-c409-4457-8c81-59ff3ea03b6b" />
 
 ---
 
