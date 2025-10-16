@@ -60,11 +60,11 @@ See below for installation options.
 RustScan Installation
 
 Official guide: RustScan Wiki – Installation:
-![[https://github.com/bee-san/RustScan/wiki/Installation-Guide]]
+https://github.com/bee-san/RustScan/wiki/Installation-Guide
 
 **Linux (.deb)**
 Download the latest .deb package from the RustScan releases page:
-![[https://github.com/bee-san/RustScan/releases]]
+https://github.com/bee-san/RustScan/releases
 
 ```bash
 sudo dpkg -i rustscan_<version>_amd64.deb
@@ -82,9 +82,8 @@ brew install rustscan
 
 The targeted Nmap scan uses a SYN scan (-sS) by default.
 SYN scans require raw socket privileges (root / sudo).
-
-	Run Rmap with sudo (or as root) to ensure Nmap can perform -sS.
-	Running without sufficient privileges may fall back to a connect scan (-sT), which is slower and less stealthy.
+Run Rmap with sudo (or as root) to ensure Nmap can perform -sS.
+Running without sufficient privileges may fall back to a connect scan (-sT), which is slower and less stealthy.
 
 ---
 
