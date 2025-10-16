@@ -1,4 +1,3 @@
-```markdown
 # Rmap: RustScan + Nmap wrapper
 
 Rmap is a lightweight Bash tool that simplifies port scanning by performing two steps:
