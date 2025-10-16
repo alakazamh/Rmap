@@ -28,20 +28,28 @@ rust_args=""            # extra args to pass to rustscan (string)
 save_rust_out=0         # save rustscan raw stdout to file
 rust_out_path=""        # path for raw rustscan stdout
 
+# Usage
 usage() {
   cat <<EOF
 Usage: $0 [options] <target>
 
-Options:
-      -s, --short               Perform only the discovery phase (skip targeted Nmap scan).
-      -r, --rustscan            Use rustscan for discovery (default: rustscan -a <target> -r 1-65535 --ulimit=5000)
-          --rust-args "<args>"  Extra args to append to rustscan invocation (quoted).
-          --save-rust <file>    Save raw rustscan stdout to <file>.
-      --nmap-oN <file>         Save final Nmap human-readable output to <file> (like -oN).
-      --nmap-oA <pre>          Save final Nmap outputs in all formats (-oA <pre>).
-  -h, --help                   Show this help.
+Modes (mutually controlling default behaviour):
+  -s, --short            Discovery only (no targeted scan)
+
+Discovery engine / output:
+  -r, --rustscan         Use rustscan for discovery (preferred if available)
+      --rust-args "<args>"  Extra args appended to rustscan (quoted)
+      --save-rust <file>    Save raw rustscan stdout to <file>
+
+Targeted scan output:
+      --nmap-oN <file>     Save final Nmap human-readable output to <file>
+      --nmap-oA <prefix>   Save final Nmap outputs in all formats (-oA <prefix>)
+
+Other:
+  -h, --help             Show this help
 Notes:
   Options may be given before or after the target.
+  Use responsibly and only on systems you are authorized to test.
 EOF
 }
 
